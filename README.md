@@ -4,8 +4,9 @@ Full setup guide: **[Wiki Home](https://github.com/ITrackU/kubegpu)**
 ### **Key Sections**
 - **[NVIDIA Driver Guide](nvidia-driver-rhel9)**: Step-by-step `.run` installation.
 - **[Test Workloads](gpu-test-workloads)**: Validate GPU access with CUDA pods.
+- **[Master Node Setup](master-node-setup)**: Deploy k3s server.
 - **[GPU Node Setup](gpu-node-setup)**: Install NVIDIA drivers and join the cluster.
-- **[Master & Slaves Nodes Setup](master-slave-nodes-setup)**: Deploy k3s server and slaves
+
 
 ### **Prerequisites**
 - RHEL 9 / Rocky Linux 9.
