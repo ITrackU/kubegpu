@@ -1,0 +1,149 @@
+# NVIDIA Container Toolkit + Podman + containerd Installation Guide
+
+This guide walks you through setting up the NVIDIA Container Toolkit on RHEL/CentOS, installing Podman and containerd, and verifying GPU support.
+
+---
+
+## Prerequisites
+
+- A working RHEL/CentOS 8 or 9 system with an NVIDIA GPU and driver already installed.  
+- `sudo` or root privileges.  
+- Internet access.
+
+---
+
+## 1. Add the NVIDIA Container Toolkit Repository
+
+```bash
+curl -s -L https://nvidia.github.io/libnvidia-container/stable/rpm/nvidia-container-toolkit.repo \
+  | sudo tee /etc/yum.repos.d/nvidia-container-toolkit.repo
+```
+
+---
+
+## 2. Install the NVIDIA Container Toolkit
+
+```bash
+sudo dnf clean all
+sudo dnf makecache
+sudo dnf install -y nvidia-container-toolkit
+```
+
+---
+
+## 3. Configure NVIDIA Runtime Support
+
+### 3.1 For Docker (if you have Docker CE)
+
+```bash
+sudo nvidia-ctk runtime configure --runtime=docker
+```
+
+> **Note:** If you intend to use Kubernetes you must first have installed Docker :
+>
+> ```bash
+> sudo yum install -y yum-utils
+> sudo yum-config-manager --add-repo https://download.docker.com/linux/centos/docker-ce.repo
+> sudo dnf install -y docker-ce docker-ce-cli containerd.io
+> sudo systemctl enable --now docker
+> ```
+
+### 3.2 For containerd
+
+```bash
+sudo nvidia-ctk runtime configure --runtime=containerd
+```
+
+---
+
+## 4. Generate and Secure the CDI Specification
+
+```bash
+sudo nvidia-ctk cdi generate --output=/etc/cdi/nvidia.yaml
+sudo chmod -R a+rX /etc/cdi
+```
+
+---
+
+## 5. Reload Systemd Daemons
+
+```bash
+sudo systemctl daemon-reload
+```
+
+---
+
+## 6. Install & Configure Podman
+
+```bash
+sudo dnf install -y podman
+sudo systemctl enable --now podman
+```
+
+---
+
+## 7. Install & Configure containerd
+
+```bash
+sudo wget https://github.com/containerd/containerd/releases/download/v2.0.0/containerd-2.0.0-linux-amd64.tar.gz
+sudo tar Cxzvf /usr/local containerd-1.6.2-linux-amd64.tar.gz
+sudo wget https://raw.githubusercontent.com/containerd/containerd/main/containerd.service -P /etc/systemd/system/
+sudo systemctl enable --now containerd
+```
+
+---
+
+## 8. (Optional) DKMS Autoinstall
+
+If you need DKMS modules built for your driver:
+
+```bash
+sudo dkms autoinstall
+```
+
+## 9. ctr (containerd)
+
+```bash
+sudo ctr images pull docker.io/nvidia/cuda:12.2.0-base-ubuntu22.04
+sudo ctr run --rm --gpus 0 \
+  docker.io/nvidia/cuda:12.2.0-base-ubuntu22.04 \
+  test-gpu nvidia-smi
+```
+
+---
+
+## 10. List Available CDI Devices
+
+```bash
+sudo nvidia-ctk cdi list
+```
+
+---
+
+## 11. Cleanup
+
+```bash
+sudo dnf clean all
+```
+
+---
+
+## 12. Troubleshooting
+
+You can have some troubles installing dkms :
+
+```bash
+dkms status
+nvidia/535.261.03, 5.14.0-570.12.1.el9_6.x86_64, x86_64: installed
+nvidia/550.144.03, 5.14.0-503.35.1.el9_5.x86_64, x86_64: installed
+Error! Could not locate dkms.conf file.
+File: /var/lib/dkms/nvidia/550.144.03/source/dkms.conf does not exist.
+```
+
+In this case, you have to remove the files for the corruped installation :
+
+# check the corrupted files
+ls -la /var/lib/dkms/nvidia/
+# Erase the existing corrupted files (all the files that are not 535.x driver)
+sudo rm -rf /var/lib/dkms/nvidia/550.144.03
+
