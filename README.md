@@ -1,7 +1,3 @@
-Here’s a reorganized and better-structured version of your wiki in Markdown. I grouped related topics, standardized formatting, and added a clear hierarchy so readers can follow step by step without losing track.
-
----
-
 # 🚀 GPU Setup on RHEL 9 — NVIDIA Drivers, Container Toolkit & k3s Cluster
 
 This wiki covers three major parts:
@@ -328,9 +324,3 @@ sudo systemctl daemon-reload
 
 * [NVIDIA Driver Docs](https://download.nvidia.com/XFree86/Linux-x86_64/535.261.03/README/index.html)
 * [RHEL 9 Kernel Management](https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/9/html/managing_monitoring_and_updating_the_kernel/index)
-
----
-
-✅ This structure now flows from **driver installation → container runtime setup → k3s GPU cluster**, with clearly separated troubleshooting + cleanup sections.
-
-Do you want me to also **merge troubleshooting for driver + container + k3s into a single unified “Troubleshooting Matrix”** at the end, so readers don’t have to jump around?
