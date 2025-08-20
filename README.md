@@ -1,7 +1,3 @@
-Here’s a reorganized and better-structured version of your wiki in Markdown. I grouped related topics, standardized formatting, and added a clear hierarchy so readers can follow step by step without losing track.
-
----
-
 # 🚀 GPU Setup on RHEL 9 — NVIDIA Drivers, Container Toolkit & k3s Cluster
 
 This wiki covers three major parts:
